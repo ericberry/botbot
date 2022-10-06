@@ -21,17 +21,43 @@ public class QuizDialog extends CancelAndHelpDialog {
 
         addDialog(new TextPrompt("TextPrompt"));
         addDialog(new ConfirmPrompt("ConfirmPrompt"));
+        addDialog(new QuestionDialog(null));
         WaterfallStep[] waterfallSteps = {
-            this::questionStep1,
-            this::questionStep2,
+            this::questionStep,
+            this::questionStep,
             this::finalStep
         };
         addDialog(new WaterfallDialog("WaterfallDialog", Arrays.asList(waterfallSteps)));
 
-        System.out.println("Initialized QuizDialog");
 
         // The initial child Dialog to run.
         setInitialDialogId("WaterfallDialog");
+    }
+
+    
+    private CompletableFuture<DialogTurnResult> questionStep(WaterfallStepContext stepContext) {
+        QuizDetails quizDetails = (QuizDetails) stepContext.getOptions();
+        System.out.println("QuizDialog::questionStep: quizDetails" + quizDetails);
+
+        QuizDetails result = (QuizDetails) stepContext.getResult();
+        System.out.println("QuizDialog::questionStep: result" + result);
+        if (result != null) {
+            System.out.println("QuizDialog::questionStep: getResult: true");
+            quizDetails = (QuizDetails) stepContext.getResult();
+        }
+
+        // quizDetails.setOrigin((String) stepContext.getResult());
+        System.out.println("QuizDialog::questionStep: starting");
+        System.out.println("QuizDialog::questionStep: quizDetails.getCurrentQuestion: " + quizDetails.getCurrentQuestion());
+        System.out.println("QuizDialog::questionStep: quizDetails.getQuestion().size(): " + quizDetails.getQuestions().size());
+
+        if (quizDetails.getCurrentQuestion() <  quizDetails.getQuestions().size()) {
+            System.out.println("QuizDialog::questionStep: calling QuestionDialog");
+            return stepContext.beginDialog("QuestionDialog", quizDetails);
+        }
+
+        System.out.println("QuizDialog::questionStep: finished");
+        return stepContext.next(quizDetails);
     }
 
     private CompletableFuture<DialogTurnResult> questionStep1(WaterfallStepContext stepContext) {
@@ -79,6 +105,7 @@ public class QuizDialog extends CancelAndHelpDialog {
         return stepContext.next(quizDetails.getCurrentAnswer());
     }
 
+
     private CompletableFuture<DialogTurnResult> questionStep2(WaterfallStepContext stepContext) {
         QuizDetails quizDetails = (QuizDetails) stepContext.getOptions();
 
@@ -109,16 +136,17 @@ public class QuizDialog extends CancelAndHelpDialog {
 
 
     private CompletableFuture<DialogTurnResult> finalStep(WaterfallStepContext stepContext) {
-        QuizDetails quizDetails = (QuizDetails) stepContext.getOptions();
-
-        quizDetails.setCurrentAnswer((String) stepContext.getResult());
-        if (quizDetails.getCurrentAnswer().equals(quizDetails.getQuestions().get(quizDetails.getCurrentQuestion()).getCorrectAnswer())) {
-            quizDetails.markCorrect();
-            System.out.println("The answer was correct");
-        } else {
-            quizDetails.markIncorrect();
-            System.out.println("The answer was wrong");
-        }
+        QuizDetails quizDetails = (QuizDetails) stepContext.getResult();
+        System.out.println("QuizDialog::finalStep");
+        System.out.println("QuizDialog::finalStep: quizDetails.getCurrentQuestion(): " + quizDetails.getCurrentQuestion());
+        // quizDetails.setCurrentAnswer((String) stepContext.getResult());
+        // if (quizDetails.getCurrentAnswer().equals(quizDetails.getQuestions().get(quizDetails.getCurrentQuestion()).getCorrectAnswer())) {
+        //     quizDetails.markCorrect();
+        //     System.out.println("The answer was correct");
+        // } else {
+        //     quizDetails.markIncorrect();
+        //     System.out.println("The answer was wrong");
+        // }
 
 
         // if ((Boolean) stepContext.getResult()) {
