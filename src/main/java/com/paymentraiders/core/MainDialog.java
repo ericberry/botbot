@@ -55,7 +55,7 @@ public class MainDialog extends ComponentDialog {
      * @return A {@link DialogTurnResult}
      */
     private CompletableFuture<DialogTurnResult> introStep(WaterfallStepContext stepContext) {
-            Activity text = MessageFactory.text("Welcome to the Azure Learning Platform at U.S. Bank.  You will be asked 10 questions, please respond to each question with the full text of the chosen answer.", null, InputHints.IGNORING_INPUT);
+            Activity text = MessageFactory.text("Welcome to the Azure Learning Platform.  You will be asked 10 questions, please respond to each question with the full text of the chosen answer.", null, InputHints.IGNORING_INPUT);
             return stepContext.getContext().sendActivity(text)
                 .thenCompose(sendResult -> stepContext.next(null));
     }
