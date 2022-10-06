@@ -55,7 +55,15 @@ public class MainDialog extends ComponentDialog {
      * @return A {@link DialogTurnResult}
      */
     private CompletableFuture<DialogTurnResult> introStep(WaterfallStepContext stepContext) {
-            Activity text = MessageFactory.text("Welcome to the Azure Learning Platform.  You will be asked 10 questions, please respond to each question with the full text of the chosen answer.", null, InputHints.IGNORING_INPUT);
+            
+            Activity text = MessageFactory.text("Welcome to the Azure Learning Bot.  You will be presented with a 10 question quiz.\n\nRespond to each question with the full text or the number of the correct answer.", null, InputHints.IGNORING_INPUT);
+            
+            if (stepContext.getOptions() instanceof String) {
+                text = MessageFactory.text((String) stepContext.getOptions());
+                System.out.println("MainDialog::introStep: " + stepContext.getOptions().toString());
+
+            }
+
             return stepContext.getContext().sendActivity(text)
                 .thenCompose(sendResult -> stepContext.next(null));
     }
@@ -121,7 +129,7 @@ public class MainDialog extends ComponentDialog {
 
         System.out.println("MainDialog::finalStep: reprompting with a different message");
         // Restart the main dialog with a different message the second time around
-        String promptMessage = "What else can I do for you?";
+        String promptMessage = "You have successfully completed your quiz.  Continue if you would like to try again.";
         System.out.println("MainDialog::finalStep: getInitialDialogId: " + getInitialDialogId() + " id: " + getId());
         return stepResult
             .thenCompose(result -> stepContext.replaceDialog(getInitialDialogId(), promptMessage));

@@ -148,10 +148,10 @@ public class QuizDialog extends CancelAndHelpDialog {
             System.out.println("QuizDialog::gradingStep: quizDetails: " + quizDetails);
 
             int totalQuestions = quizDetails.getCorrectCount() + quizDetails.getIncorrectCount();
-            Double percentageCorrect = (double) (quizDetails.getCorrectCount() / totalQuestions * 100);
+            Double percentageCorrect = Double.valueOf(quizDetails.getCorrectCount()) / Double.valueOf(totalQuestions) * 100;
 
             String messageText = "You answered " + quizDetails.getCorrectCount() + "/" + totalQuestions + " correct!";
-            messageText = messageText + "\n\nPercentage Correct: " + percentageCorrect + "%";
+            messageText = messageText + "\n\nPercentage Correct: " + String.format("%.0f", percentageCorrect) + "%";
             Activity message = MessageFactory
                 .text(messageText, messageText, InputHints.IGNORING_INPUT);
             stepResult = stepContext.getContext().sendActivity(message).thenApply(sendResult -> null);
