@@ -112,19 +112,13 @@ public class QuestionDialog extends CancelAndHelpDialog {
                     InputHints.IGNORING_INPUT
                 );
 
-            // PromptOptions promptOptions = new PromptOptions();
-            // promptOptions.setPrompt(promptMessage);
-            // return stepContext.prompt("TextPrompt", promptOptions);
-
+            PromptOptions promptOptions = new PromptOptions();
+            promptOptions.setPrompt(promptMessage);
 
             return stepContext.getContext().sendActivity(promptMessage)
             .thenCompose(sendResult -> stepContext.next(quizDetails));
         }
 
-        // if ((Boolean) stepContext.getResult()) {
-        //     QuizDetails quizDetails = (QuizDetails) stepContext.getOptions();
-        //     return stepContext.endDialog(quizDetails);
-        // }
         System.out.println("QuestionDialog::checkAnswerStep: currentQuestion: " + quizDetails.getCurrentQuestion());
         return stepContext.next(quizDetails);
     }
