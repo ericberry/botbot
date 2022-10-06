@@ -78,12 +78,47 @@ public class QuestionDialog extends CancelAndHelpDialog {
         quizDetails.setCurrentAnswer((String) stepContext.getResult());
         System.out.println("QuestionDialog::checkAnswerStep: setCurrentAnswer: " + quizDetails.getCurrentAnswer());
 
-        if (quizDetails.getCurrentAnswer().equals(quizDetails.getQuestions().get(quizDetails.getCurrentQuestion()).getCorrectAnswer())) {
-            System.out.println("QuestionDialog::checkAnswerStep: correct answer");
-            quizDetails.markCorrect();
-        } else {
-            System.out.println("QuestionDialog::checkAnswerStep: incorrect answer");
-            quizDetails.markIncorrect();
+        QuestionDetails currentQuestion = quizDetails.getQuestions().get(quizDetails.getCurrentQuestion());
+        String currentAnswer = quizDetails.getCurrentAnswer();
+
+        System.out.println("QuestionDialog::checkAnswerStep: currentAnswer: " + currentAnswer);
+        
+        Integer currentAnswerInt = null;
+        try {
+            currentAnswerInt = Integer.parseInt(currentAnswer) - 1;
+        } catch (Exception ex) {
+            // ignore 
+            // currentAnswerInt = null;
+            System.out.println("QuestionDialog::checkAnswerStep: Caught Exception");
+        }
+
+        if (currentAnswer != null) {
+            String responseString = "You answered the question ";
+
+            if (currentAnswer.toLowerCase().equals(currentQuestion.getCorrectAnswer().toLowerCase()) || (currentAnswerInt == currentQuestion.getCorrectAnswerIndex())) {
+                System.out.println("QuestionDialog::checkAnswerStep: correct answer");
+                responseString = responseString + "correct! Good Work!";
+                quizDetails.markCorrect();
+            } else {
+                System.out.println("QuestionDialog::checkAnswerStep: incorrect answer");
+                responseString = responseString + "incorrect.  Review the additional references to learn more:";
+                quizDetails.markIncorrect();
+            }
+
+            responseString = responseString + "\n\nAdditional References:\n" + currentQuestion.getReference();
+            
+            Activity promptMessage =
+                MessageFactory.text(responseString, responseString,
+                    InputHints.IGNORING_INPUT
+                );
+
+            // PromptOptions promptOptions = new PromptOptions();
+            // promptOptions.setPrompt(promptMessage);
+            // return stepContext.prompt("TextPrompt", promptOptions);
+
+
+            return stepContext.getContext().sendActivity(promptMessage)
+            .thenCompose(sendResult -> stepContext.next(quizDetails));
         }
 
         // if ((Boolean) stepContext.getResult()) {

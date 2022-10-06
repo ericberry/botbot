@@ -76,12 +76,12 @@ public class MainDialog extends ComponentDialog {
             questionAnswers1.add("GDPR");
             questionAnswers1.add("CIS");
             questionAnswers1.add("ANSI");
-            QuestionDetails question1 = new QuestionDetails("The ___________________ is a regulation in EU law on data protection and privacy in the European Union and the European Economic Area.", questionAnswers1, "GDPR");
+            QuestionDetails question1 = new QuestionDetails("The ___________________ is a regulation in EU law on data protection and privacy in the European Union and the European Economic Area.", questionAnswers1, "GDPR", 1,  "https://en.wikipedia.org/wiki/General_Data_Protection_Regulation");
             
             ArrayList<String> questionAnswers2 = new ArrayList<>();
             questionAnswers2.add("Public");
             questionAnswers2.add("Private");
-            QuestionDetails question2 = new QuestionDetails("When computing and processing demand increases beyond an on-premises datacenter’s capabilities, businesses can easily use the ___________ cloud to instantly scale capacity up or down to handle excess capacity.", questionAnswers2, "Public");
+            QuestionDetails question2 = new QuestionDetails("When computing and processing demand increases beyond an on-premises datacenter’s capabilities, businesses can easily use the ___________ cloud to instantly scale capacity up or down to handle excess capacity.", questionAnswers2, "Public", 0, "https://azure.microsoft.com/en-gb/overview/what-is-hybrid-cloud-computing/");
             
             ArrayList<QuestionDetails> questions = new ArrayList<QuestionDetails>();
             questions.add(question1);
@@ -108,16 +108,16 @@ public class MainDialog extends ComponentDialog {
         // If the child dialog ("BookingDialog") was cancelled,
         // the user failed to confirm or if the intent wasn't BookFlight
         // the Result here will be null.
-        if (stepContext.getResult() instanceof QuizDetails) {
-            // Now we have all the booking details call the booking service.
-            // If the call to the booking service was successful tell the user.
-            QuizDetails quizDetails = (QuizDetails) stepContext.getResult();
-            String messageText = String.format("You answered " + quizDetails.getCorrectCount() + " correct and " + quizDetails.getIncorrectCount() + " incorrect");
-            System.out.println("MainDialog::finalStep: messageText: " + messageText);
-            Activity message = MessageFactory
-                .text(messageText, messageText, InputHints.IGNORING_INPUT);
-            stepResult = stepContext.getContext().sendActivity(message).thenApply(sendResult -> null);
-        }
+        // if (stepContext.getResult() instanceof QuizDetails) {
+        //     // Now we have all the booking details call the booking service.
+        //     // If the call to the booking service was successful tell the user.
+        //     QuizDetails quizDetails = (QuizDetails) stepContext.getResult();
+        //     String messageText = String.format("You answered " + quizDetails.getCorrectCount() + " correct and " + quizDetails.getIncorrectCount() + " incorrect");
+        //     System.out.println("MainDialog::finalStep: messageText: " + messageText);
+        //     Activity message = MessageFactory
+        //         .text(messageText, messageText, InputHints.IGNORING_INPUT);
+        //     stepResult = stepContext.getContext().sendActivity(message).thenApply(sendResult -> null);
+        // }
 
         System.out.println("MainDialog::finalStep: reprompting with a different message");
         // Restart the main dialog with a different message the second time around

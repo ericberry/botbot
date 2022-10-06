@@ -7,12 +7,16 @@ public class QuestionDetails {
     private String question;
     private List<String> answerOptions;
     private String correctAnswer;
+    private Integer correctAnswerIndex;
+    private String reference;
 
 
-    public QuestionDetails(String question, List<String> answerOptions, String correctAnswer) {
+    public QuestionDetails(String question, List<String> answerOptions, String correctAnswer, Integer correctAnswerIndex, String reference) {
         this.question = question;
         this.answerOptions = answerOptions;
         this.correctAnswer = correctAnswer;
+        this.correctAnswerIndex = correctAnswerIndex;
+        this.reference = reference;
     }
 
     public String getQuestion() {
@@ -37,6 +41,22 @@ public class QuestionDetails {
 
     public void setCorrectAnswer(String correctAnswer) {
         this.correctAnswer = correctAnswer;
+    }
+
+    public Integer getCorrectAnswerIndex() {
+        return this.correctAnswerIndex;
+    }
+
+    public void setCorrectAnswerIndex(Integer correctAnswerIndex) {
+        this.correctAnswerIndex = correctAnswerIndex;
+    }
+
+    public String getReference() {
+        return this.reference;
+    }
+
+    public void setRefrence(String reference) {
+        this.reference = reference;
     }
 
 }

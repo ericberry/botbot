@@ -25,6 +25,7 @@ public class QuizDialog extends CancelAndHelpDialog {
         WaterfallStep[] waterfallSteps = {
             this::questionStep,
             this::questionStep,
+            this::gradingStep,
             this::finalStep
         };
         addDialog(new WaterfallDialog("WaterfallDialog", Arrays.asList(waterfallSteps)));
@@ -134,26 +135,37 @@ public class QuizDialog extends CancelAndHelpDialog {
         return stepContext.next(quizDetails.getCurrentAnswer());
     }
 
+    private CompletableFuture<DialogTurnResult> gradingStep(WaterfallStepContext stepContext) {
+        // QuizDetails quizDetails = (QuizDetails) stepContext.getResult();
+        System.out.println("QuizDialog::gradingStep: starting");
+        CompletableFuture<Void> stepResult = CompletableFuture.completedFuture(null);
+
+        if (stepContext.getResult() instanceof QuizDetails) {
+            // Now we have all the booking details call the booking service.
+            // If the call to the booking service was successful tell the user.
+            System.out.println("QuizDialog::gradingStep: inside if statment.");
+            QuizDetails quizDetails = (QuizDetails) stepContext.getResult();
+            System.out.println("QuizDialog::gradingStep: quizDetails: " + quizDetails);
+
+            int totalQuestions = quizDetails.getCorrectCount() + quizDetails.getIncorrectCount();
+            Double percentageCorrect = (double) (quizDetails.getCorrectCount() / totalQuestions * 100);
+
+            String messageText = "You answered " + quizDetails.getCorrectCount() + "/" + totalQuestions + " correct!";
+            messageText = messageText + "\n\nPercentage Correct: " + percentageCorrect + "%";
+            Activity message = MessageFactory
+                .text(messageText, messageText, InputHints.IGNORING_INPUT);
+            stepResult = stepContext.getContext().sendActivity(message).thenApply(sendResult -> null);
+        }
+
+        System.out.println("QuizDialog::gradingStep: completing");
+        return stepContext.next(null);
+    }
 
     private CompletableFuture<DialogTurnResult> finalStep(WaterfallStepContext stepContext) {
-        QuizDetails quizDetails = (QuizDetails) stepContext.getResult();
+        // QuizDetails quizDetails = (QuizDetails) stepContext.getResult();
         System.out.println("QuizDialog::finalStep");
-        System.out.println("QuizDialog::finalStep: quizDetails.getCurrentQuestion(): " + quizDetails.getCurrentQuestion());
-        // quizDetails.setCurrentAnswer((String) stepContext.getResult());
-        // if (quizDetails.getCurrentAnswer().equals(quizDetails.getQuestions().get(quizDetails.getCurrentQuestion()).getCorrectAnswer())) {
-        //     quizDetails.markCorrect();
-        //     System.out.println("The answer was correct");
-        // } else {
-        //     quizDetails.markIncorrect();
-        //     System.out.println("The answer was wrong");
-        // }
+        // System.out.println("QuizDialog::finalStep: quizDetails.getCurrentQuestion(): " + quizDetails.getCurrentQuestion());
 
-
-        // if ((Boolean) stepContext.getResult()) {
-        //     QuizDetails quizDetails = (quizDetails) stepContext.getOptions();
-        //     return stepContext.endDialog(quizDetails);
-        // }
-
-        return stepContext.endDialog(quizDetails);
+        return stepContext.endDialog(null);
     }
 }
